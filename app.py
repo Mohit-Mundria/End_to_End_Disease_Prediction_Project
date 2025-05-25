@@ -6,12 +6,6 @@ import json
 
 app=Flask(__name__)
 
-# ➤ Turn on template auto–reload
-app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.jinja_env.auto_reload = True
-
-# ➤ (Optional) Clear any existing template cache on startup
-app.jinja_env.cache.clear()
 
 model=joblib.load(r"C:\Users\ACER\Documents\Downloads\ensemble_model.pkl")
 encoder=joblib.load(r"C:\Users\ACER\Documents\Downloads\_disease_Lebel_encoder")
@@ -34,7 +28,7 @@ all_symptoms=list(disease_weight_dict.keys())
 @app.route('/')
 def home():
     print("Home page loaded!")
-    return render_template("home.html",symptoms=all_symptoms)
+    return render_template("home.html")#,symptoms=all_symptoms)
 
 
 
@@ -68,26 +62,27 @@ def predict_api():
     })
     
     
-@app.route("/predict" ,methods=['POST'])
+@app.route("/predict" ,methods=['GET','POST'])
 def predict():
-    symptoms=[]
+    if request.method == 'GET':
+        return render_template("predict.html", symptoms=all_symptoms)
+    selected_symptoms=[]
     for i in range(1,6):
         symptom=request.form.get(f"symptom{i}")
         if symptom:
             weight=disease_weight_dict.get(symptom,0)
-            symptoms.append(weight)
-    while len(symptoms)<17:
-        symptoms.append(0)
-    input_df=pd.DataFrame([symptoms],columns=["Symptom_1","Symptom_2","Symptom_3","Symptom_4","Symptom_5","Symptom_6","Symptom_7","Symptom_8","Symptom_9","Symptom_10","Symptom_11","Symptom_12","Symptom_13","Symptom_14","Symptom_15","Symptom_16","Symptom_17"])
+            selected_symptoms.append(weight)
+    while len(selected_symptoms)<17:
+        selected_symptoms.append(0)
+    input_df=pd.DataFrame([selected_symptoms],columns=["Symptom_1","Symptom_2","Symptom_3","Symptom_4","Symptom_5","Symptom_6","Symptom_7","Symptom_8","Symptom_9","Symptom_10","Symptom_11","Symptom_12","Symptom_13","Symptom_14","Symptom_15","Symptom_16","Symptom_17"])
     output=model.predict(input_df)[0]
     disease=encoder.inverse_transform([output])[0]
     precautions = prec_dict.get(disease, ["No precautions found"])
     description = desp_dict.get(disease, "No description available.")
-    return render_template("home.html",
+    return render_template("predict.html",
     prediction_text=f"Predicted Disease: {disease}",
     precautions=precautions,
-    description=description,
-    sym=all_symptoms)
+    description=description)
                 
 if __name__=="__main__":
     app.run(debug=True)
