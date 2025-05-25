@@ -6,7 +6,7 @@ import json
 
 app=Flask(__name__)
 
-
+# Here we laod our model and required files.
 model=joblib.load(r"C:\Users\ACER\Documents\Downloads\ensemble_model.pkl")
 encoder=joblib.load(r"C:\Users\ACER\Documents\Downloads\_disease_Lebel_encoder")
 
@@ -24,22 +24,20 @@ all_symptoms=list(disease_weight_dict.keys())
 
 
 
-
+#This will triger our Home.html file.
 @app.route('/')
 def home():
     print("Home page loaded!")
-    return render_template("home.html")#,symptoms=all_symptoms)
+    return render_template("home.html")
 
 
-
+#Here we made a method which is used when our user use the API for sending the input and model predict the output. 
 @app.route("/predict_api",methods=['GET','POST'])
 def predict_api():
     data=request.json["data"]
     print("Received JSON data:", data)
     if request.method == 'POST':
         print("Form submitted!")
-    
-    
     lst=[]
     for i in data:
         lst.append(disease_weight_dict.get(data[i],0))
@@ -61,7 +59,9 @@ def predict_api():
         "precautions": precautions
     })
     
-    
+
+
+# Here we made a method for the user which directly give data from the website.   
 @app.route("/predict" ,methods=['GET','POST'])
 def predict():
     if request.method == 'GET':
