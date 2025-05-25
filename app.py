@@ -7,16 +7,16 @@ import json
 app=Flask(__name__)
 
 # Here we laod our model and required files.
-model=joblib.load(r"C:\Users\ACER\Documents\Downloads\ensemble_model.pkl")
-encoder=joblib.load(r"C:\Users\ACER\Documents\Downloads\_disease_Lebel_encoder")
+model=joblib.load(r"ensemble_model.pkl")
+encoder=joblib.load(r"_disease_Lebel_encoder")
 
-file1=open(r"C:\Users\ACER\Documents\Downloads\precaution_dict.json")
+file1=open(r"precaution_dict.json")
 prec_dict=json.load(file1)
 
-file2=open(r"C:\Users\ACER\Documents\Downloads\disease_weight_dict.json")
+file2=open(r"disease_weight_dict.json")
 disease_weight_dict=json.load(file2)
 
-file3=open(r"C:\Users\ACER\Documents\Downloads\desp_dataset_dict.json")
+file3=open(r"desp_dataset_dict.json")
 desp_dict=json.load(file3)
 
 
