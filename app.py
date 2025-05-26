@@ -7,7 +7,7 @@ import json
 app=Flask(__name__)
 
 # Here we laod our model and required files.
-model=joblib.load(r"Models/Models/ensemble_model.pkl")
+model=joblib.load(r"Models/ensemble_model.pkl")
 encoder=joblib.load(r"Models/_disease_Lebel_encoder")
 
 file1=open(r"Models/precaution_dict.json")
