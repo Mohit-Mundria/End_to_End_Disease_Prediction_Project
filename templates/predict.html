@@ -1,124 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Disease Prediction App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptom Predictor | AI Diagnosis</title>
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to custom stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            color: #fff;
+        .page-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
         }
 
-        .container {
-            max-width: 700px;
-            margin: 50px auto;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.39);
-        }
-
-        h1 {
+        .header-title {
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 32px;
+            margin-bottom: 3rem;
         }
 
-        label {
-            display: block;
-            margin-top: 20px;
-            font-weight: bold;
+        .header-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
         select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            font-size: 16px;
-            margin-top: 5px;
-        }
-
-        button {
-            margin-top: 30px;
-            padding: 12px 25px;
-            background-color: #00f2fe;
-            border: none;
-            color: #000;
-            border-radius: 10px;
-            font-size: 18px;
+            appearance: none;
             cursor: pointer;
-            transition: 0.3s ease;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 2.5rem !important;
         }
 
-        button:hover {
-            background-color: #4facfe;
+        .result-container {
+            margin-top: 3rem;
+            animation: fadeInUp 0.5s ease forwards;
         }
 
-        .result {
-            margin-top: 30px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
         }
 
-        .precautions {
-            margin-top: 15px;
+        .result-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-right: 1.5rem;
         }
 
-        .precautions ul {
-            padding-left: 20px;
+        .result-title {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 2rem;
         }
 
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 14px;
-            opacity: 0.7;
+        .result-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .precautions-list {
+            list-style: none;
+        }
+
+        .precautions-list li {
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .precautions-list li i {
+            color: var(--primary-color);
+            margin-right: 1rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        .back-link i {
+            margin-right: 0.5rem;
+        }
+
+        /* Spinner for loading state */
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
-    <h1>Make Prediction and Stay Safe</h1>
-    <div class="container">
-        <h1>Disease Prediction System</h1>
-        <!--Here we take input from the user by a loop-->
-        <form method="POST" action="/predict">
-            {% for i in range(1, 6) %}
-                <label for="symptom{{ i }}">Select Symptom {{ i }}</label>
-                <select name="symptom{{ i }}" id="symptom{{ i }}">
-                    <option value="">-- Choose a symptom --</option>
-                    {% for symptom in symptoms %}
-                        <option value="{{ symptom }}">{{ symptom }}</option>
+
+    <!-- Background Decoration -->
+    <div class="bg-blob bg-blob-1" style="top: -20%; right: -10%; left: auto;"></div>
+    <div class="bg-blob bg-blob-2" style="bottom: -20%; left: -10%; right: auto;"></div>
+
+    <!-- Navigation -->
+    <nav style="padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <a href="/"
+            style="text-decoration: none; color: inherit; font-weight: 700; font-size: 1.2rem; letter-spacing: 1px;">
+            <i class="fa-solid fa-heart-pulse text-gradient" style="margin-right: 8px;"></i> AI Predictor
+        </a>
+    </nav>
+
+    <div class="page-container">
+        <a href="/" class="back-link reveal"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+
+        <div class="header-title reveal delay-1">
+            <h1 class="text-gradient">Diagnostic Analysis</h1>
+            <p style="color: var(--text-secondary);">Select up to 5 symptoms carefully to get the most accurate
+                prediction.</p>
+        </div>
+
+        <div class="glass-panel reveal delay-2">
+            <form method="POST" action="/predict">
+                <div style="display: grid; gap: 1rem;">
+                    {% for i in range(1, 6) %}
+                    <div class="form-group">
+                        <label for="symptom{{ i }}"><i class="fa-solid fa-stethoscope"
+                                style="margin-right: 8px; font-size: 0.9em; opacity: 0.7;"></i> Symptom {{ i }}</label>
+                        <select name="symptom{{ i }}" id="symptom{{ i }}" class="form-control">
+                            <option value="" disabled selected>-- Select an observed symptom --</option>
+                            {% for symptom in symptoms %}
+                            <option value="{{ symptom }}">{{ symptom.replace('_', ' ').title() }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     {% endfor %}
-                </select>
-            {% endfor %}
+                </div>
 
-            <button type="submit">Predict Disease</button>
-        </form>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn-primary" style="width: 100%; max-width: 300px;">
+                        Analyze Symptoms <i class="fa-solid fa-microscope" style="margin-left: 8px;"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
 
+        <!-- Render Results if available -->
         {% if prediction_text %}
-            <div class="result">
-                <h2>{{ prediction_text }}</h2>
-                <p><strong>description:</strong> {{ description }}</p>
-
-                <div class="precautions">
-                    <h4>Precautions:</h4>
-                    <ul>
-                        {% for precaution in precautions %}
-                            <li>{{ precaution }}</li>
-                        {% endfor %}
-                    </ul>
+        <div class="glass-panel result-container">
+            <div class="result-header">
+                <i class="fa-solid fa-triangle-exclamation result-icon"></i>
+                <div>
+                    <h5
+                        style="color: var(--text-secondary); margin-bottom: 0.2rem; font-weight: 500; font-size: 0.9rem;">
+                        AI PREDICTION RESULT</h5>
+                    <h2 class="result-title">{{ prediction_text.replace('Predicted Disease: ', '') }}</h2>
                 </div>
             </div>
+
+            <div class="result-body">
+                <h4 style="margin-bottom: 1rem; color: var(--primary-color);">Condition Description</h4>
+                <p class="result-description">
+                    {{ description }}
+                </p>
+
+                <h4 style="margin-bottom: 1rem; color: var(--primary-color);">Recommended Precautions</h4>
+                <ul class="precautions-list">
+                    {% for precaution in precautions %}
+                    <li><i class="fa-solid fa-check"></i> {{ precaution.capitalize() }}</li>
+                    {% endfor %}
+                </ul>
+
+                <div
+                    style="margin-top: 2rem; padding: 1rem; background: rgba(255,8,68,0.1); border-left: 4px solid var(--accent-color); border-radius: 0 8px 8px 0; color: #fff; font-size: 0.9rem;">
+                    <strong><i class="fa-solid fa-circle-info"></i> Disclaimer:</strong> This prediction is based on
+                    machine learning probability and should not be used as a replacement for professional medical
+                    advice. Please consult a doctor for a proper diagnosis.
+                </div>
+            </div>
+        </div>
         {% endif %}
     </div>
 
-    <footer>
-        © 2025 Disease Predictor | AI-powered Health Assistant
+    <!-- Footer -->
+    <footer style="margin-top: 2rem;">
+        <p>&copy; 2025 AI Disease Predictor | Created to demonstrate End-to-End ML deployment.</p>
     </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 </body>
+
 </html>

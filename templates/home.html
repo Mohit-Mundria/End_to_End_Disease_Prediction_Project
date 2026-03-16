@@ -1,65 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Disease Prediction System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Disease Predictor | Advanced Diagnostic Tool</title>
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to custom stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f8ff;
-            margin: 0;
-            padding: 0;
-            color: #333;
+        /* Home Page Specific Styles */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
         }
 
-        .container {
+        .hero-content {
+            text-align: center;
             max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            z-index: 10;
         }
 
-        h1 {
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
             text-align: center;
-            color: #007acc;
+            margin-bottom: 4rem;
         }
 
-        p {
-            font-size: 18px;
-            line-height: 1.6;
+        .section-title {
+            font-size: 2.5rem;
         }
 
-        footer {
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2.5rem;
+            text-align: left;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        /* Architecture Section */
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(79, 172, 254, 0.1);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        .step-container {
+            margin-top: 2rem;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #111;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+
+        .step-content h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Author Card */
+        .author-card {
+            max-width: 600px;
+            margin: 0 auto;
             text-align: center;
-            margin-top: 40px;
-            font-size: 14px;
-            color: #888;
+            padding: 3rem;
+        }
+
+        .author-links {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .author-links a {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .author-links a:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>Welcome to the Disease Prediction System</h1>
-    <p>
-        This web application helps you predict possible diseases based on the symptoms you select.
-        It uses machine learning models and ensemble learning techniques to provide accurate predictions.
-    </p>
-    <p>
-        Simply go to the prediction page, choose your symptoms, and get instant suggestions on the predicted disease,
-        along with precautions and a description.
-    </p>
-    <p>
-        Thank you for using our application. Stay safe and stay healthy!
-    </p>
-    <a href="/predict">Visit Prediction Page</a>
-</div>
+    <!-- Background Decoration -->
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
 
-<footer>
-    &copy; 2025 Disease Predictor | AI-powered Health Assistant
-</footer>
+    <!-- Navigation (Optional minimal nav) -->
+    <nav style="padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-weight: 700; font-size: 1.2rem; letter-spacing: 1px;">
+            <i class="fa-solid fa-heart-pulse text-gradient" style="margin-right: 8px;"></i> AI Predictor
+        </div>
+        <a href="/predict" class="btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Try Now</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title animate-fade-in text-gradient">Data-Driven Health Insights</h1>
+            <p class="hero-subtitle animate-fade-in delay-1">
+                A state-of-theart AI/ML-powered diagnostic tool. Input symptoms to receive highly accurate disease
+                predictions, detailed descriptions, and actionable precautions.
+            </p>
+            <div class="animate-fade-in delay-2">
+                <a href="/predict" class="btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+                    Start Diagnosis <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section>
+        <div class="section-header reveal">
+            <h2 class="section-title">Why it Works</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Combining sophisticated machine
+                learning with an accessible interface to deliver instantaneous health approximations.</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="glass-panel feature-card reveal">
+                <i class="fa-solid fa-brain feature-icon"></i>
+                <h3>Ensemble Learning</h3>
+                <p style="color: var(--text-secondary);">
+                    Utilizes advanced Ensemble classification algorithms(Adaboost Classifier + Random Forest Classifier)
+                    trained on extensive symptom-disease datasets for robust accuracy and reduced generic bias.
+                </p>
+            </div>
+
+            <div class="glass-panel feature-card reveal delay-1">
+                <i class="fa-solid fa-server feature-icon"></i>
+                <h3>Lightweight Backend</h3>
+                <p style="color: var(--text-secondary);">
+                    Requests are seamlessly handled by a fast, optimized Flask API that processes user input and serves
+                    ML inferences in real-time.
+                </p>
+            </div>
+
+            <div class="glass-panel feature-card reveal delay-2">
+                <i class="fa-solid fa-shield-heart feature-icon"></i>
+                <h3>Actionable Output</h3>
+                <p style="color: var(--text-secondary);">
+                    Beyond a simple diagnosis, the system instantly cross-references medical dictionaries to provide
+                    detailed disease descriptions and immediate precautions by the help of Machine Learning.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Architecture Section -->
+    <section>
+        <div class="glass-panel reveal" style="padding: 4rem 3rem;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4rem;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 class="section-title" style="margin-bottom: 1.5rem;">The Architecture</h2>
+                    <p style="margin-bottom: 2rem; color: var(--text-secondary); font-size: 1.1rem;">
+                        This platform bridges the gap between raw data science(machine learning) and practical
+                        application. By deploying trained models via a serialized Joblib format, the Flask application
+                        provides extremely low-latency predictions.
+                    </p>
+
+                    <div class="step-container">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Data Preprocessing</h4>
+                                <p>Sourced comprehensive datasets from Kaggle, cleaned, and encoded arrays.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Model Training</h4>
+                                <p>Trained multiple classification models and combined them using Ensemble methodologies
+                                    for superior prediction intervals.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>API Deployment</h4>
+                                <p>Models embedded inside a Flask endpoint taking JSON/Form data and parsing NumPy
+                                    arrays through the predictor logic.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-tags">
+                        <span class="tech-tag">Python 3</span>
+                        <span class="tech-tag">Pandas & NumPy</span>
+                        <span class="tech-tag">Scikit-Learn</span>
+                        <span class="tech-tag">Ensemble Learning</span>
+                        <span class="tech-tag">Data Preprocessing</span>
+                        <span class="tech-tag">Flask</span>
+                        <span class="tech-tag">Joblib</span>
+                        <span class="tech-tag">HTML5 / CSS3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Author Section -->
+    <section>
+        <div class="glass-panel author-card reveal">
+            <h2 style="margin-bottom: 0.5rem;">Developed By Mohit Mundria</h2>
+            <p style="color: var(--primary-color); font-weight: 500; margin-bottom: 1.5rem;">BCA Student & Aspiring
+                AI/ML Engineer</p>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                "This project taught me the real world application of Machine Learning and fundamental logic of backend
+                development, overcoming rendering challenges by designing structured, multi-page HTML and integrating
+                diverse endpoints for a unified user experience."
+            </p>
+            <div class="author-links">
+                <a href="mailto:mundriamohit100@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                <a href="https://linkedin.com/in/mohit-mundria-31631a322" target="_blank" title="LinkedIn"><i
+                        class="fa-brands fa-linkedin"></i></a>
+                <a href="https://github.com/Mohit-Mundria/End_to_End_Disease_Prediction_Project.git" target="_blank"
+                    title="GitHub"><i class="fa-brands fa-github"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 AI Disease Predictor | Created to demonstrate End-to-End ML deployment.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 </body>
+
 </html>
