@@ -8,13 +8,8 @@
 
 <h4 align="center">A state-of-the-art AI/ML-powered diagnostic tool with a premium glassmorphism UI.</h4>
 
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#technologies-used">Technologies Used</a> •
-  <a href="#how-it-works">How it Works</a> •
-  <a href="#deployment">Deployment</a> •
-  <a href="#author">Author</a>
-</p>
+Live APP Demo:
+http://13.60.17.25:5000
 
 ## Overview
 This project bridges the gap between raw data science and practical application. It allows users to input their symptoms and instantly receive a highly accurate disease prediction. To make the output actionable, the system cross-references medical dictionaries to provide detailed disease descriptions and immediate recommended precautions.
